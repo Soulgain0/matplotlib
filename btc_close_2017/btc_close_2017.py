@@ -66,19 +66,29 @@ def draw_line(x_data, y_data, title, y_legend):
 # 绘制收盘价月日均价
 idx_month = dates.index('2017-12-01')
 line_chart_month = draw_line(
-    months[:idx_month], closes[:idx_month], "Closes'mean every month", 'Means')
+    months[:idx_month], closes[:idx_month], "closes'mean every month", 'Means')
 line_chart_month
 
 # 绘制周日均值
 idx_weeks = dates.index('2017-12-11')
 line_char_week = draw_line(
-    weeks[1:idx_weeks], closes[1:idx_weeks], "Closes'mean every week", 'Means')
+    weeks[1:idx_weeks], closes[1:idx_weeks], "closes'mean every week", 'Means')
 
 # 绘制每周各天的日均值
 wd = ['Monday', 'Tuesday', 'Wednesday',
       'Thursday', 'Friday', 'Saturday', 'Sunday']
 weekdays_int = [wd.index(w) + 1 for w in weekdays[1:idx_weeks]]
 line_chart_weekday = draw_line(
-    weekdays_int, closes[1:idx_weeks], "Closes'mean every weekday", 'Mean')
+    weekdays_int, closes[1:idx_weeks], "closes'mean every weekday", 'Mean')
 line_chart_weekday.x_labels = wd
-line_chart_weekday.render_to_file("Closes'mean every weekday.svg")
+line_chart_weekday.render_to_file("closes'mean every weekday.svg")
+
+# 将以上的五幅图整合在一起
+with open('Closes Dashboard.html', 'w', encoding='utf8') as html_file:
+    html_file.write(
+        '<html><head><title>Close Dashboard</title><meta charset="utf8"></head><body>\n')
+    for svg in ['closes.svg', 'closes_log10.svg', "closes'mean every month.svg",
+                "closes'mean every week.svg", "closes'mean every weekday.svg"]:
+        html_file.write(
+            '    <object type="image/svg+xml" data="{0}" height=500></object>\n'.format(svg))
+        html_file.write('</body></html>')
